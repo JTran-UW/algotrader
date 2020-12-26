@@ -1,284 +1,184 @@
-import pandas as pd
 import requests
-from lxml import html
-import json
+from bs4 import BeautifulSoup
+import pandas as pd
+from datetime import datetime
 
 class YahooScraper:
-    def __init__(self, output, xpath):
+    def __init__(self):
         """
-        YahooScraper is a web scraping tool that gets stock data from Yahoo Finance.
-
-        :param output: Name of output file
+        A web scraping tool to gather essential stock information from Yahoo Finance
         """
-        self.out_file = output
-        self.path_file = xpath
+        pass
 
-        try:
-            self.stocks = pd.read_csv(self.out_file, index_col="Symbol")
-        except FileNotFoundError:
-            print(f"No watchlist file with name '{output}' was found, exiting...")
-            return None
-
-        # Create columns
-        fund_labels = self.load_paths("Fundamentals").keys()
-        week_labels = self.load_paths("Week Info").keys()
-        labels = list(fund_labels) + list(week_labels)
-        self.stocks = self.create_columns(labels)
-
-    def create_columns(self, columns, **kwargs):
+    def get_tables(self, link):
         """
-        Adds missing columns to self.stocks
-
-        :param columns: list of column names
-        :kwarg values: list of column values (default: all zeroes)
-        :return: resultant DataFrame
-        """
-        col_names = columns
-        default_values = [0.0] * self.stocks.shape[0]
-        values = kwargs.get("values", default_values)
-
-        for elem in col_names:
-            if elem not in self.stocks.columns:
-                self.stocks[elem] = pd.Series(values, index=self.stocks.index)
-                print(f"{elem} not found, creating...")
+        Get all tables in Yahoo Finance page\n
         
-        return self.stocks
-
-    def create_rows(self, rows):
+        :param link: str link to page\n
+        :return: list of dataframes containing scraped info
         """
-        Adds missing rows to self.stocks
+        html = requests.get(link)
+        soup = BeautifulSoup(html.content, "html.parser")
+        tables = soup.find_all("table")
+        dfs = []
 
-        :param rows: list of row names
-        :return: resultant DataFrame
-        """
-        row_names = rows
-        size = self.stocks.shape[1]
+        for table in tables:
+            df = pd.read_html(str(table), index_col=0)[0]
+            dfs.append(df)
         
-        for elem in row_names:
-            if elem not in self.stocks.rows:
-                self.stocks.loc[elem] = pd.Series([None] * size, index=self.stocks.index)
-                print(f"{elem} not found, creating...")
+        return dfs
+
+    def get_summary(self, stocks):
+        """
+        Scrape Yahoo Finance for summary data\n
         
-        return self.stocks
-    
-    def clear_columns(self, columns):
+        :param stocks: list of stock tickers\n
+        :return: dataframe of resulting data
         """
-        Clear a number of columns
+        summary = []
+        for stock in stocks:
+            link = f"https://finance.yahoo.com/quote/{stock}?p={stock}"
+            tables = self.get_tables(link)
 
-        :param columns: list of column names
-        :return: resultant DataFrame
-        """
-        col_names = columns
-        size = self.stocks.shape[0]
-
-        for elem in col_names:
-            if elem in self.stocks.columns:
-                del self.stocks[elem]
-                print(f"Deleting {elem}...")
+            table = pd.concat(tables).T
+            table.index = [stock]
+            summary.append(table)
         
-        return self.stocks
+        return pd.concat(summary)
 
-    def load_paths(self, section):
+    def get_statistics(self, stocks):
         """
-        Load xpath json file
-
-        :param section: name of section to access
-        :return: dictionary of attributes and xpaths
+        Scrape Yahoo Finance for stock statistics\n
+        
+        :param stocks: list of stock tickers\n
+        :return: dataframe of resulting data
         """
-        try:
-            with open(self.path_file, "r") as paths:
-                xpath = json.load(paths)
-                xpath = dict(xpath[section])
-        except FileNotFoundError:
-            print(f"No such file {self.path_file} found, exiting...")
-            return None
+        statistics = []
+        for stock in stocks:
+            link = f"https://finance.yahoo.com/quote/{stock}/key-statistics?p={stock}"
+            dfs = self.get_tables(link)[1:]
 
-        return xpath
-    
-    def to_float(self, string):
+            values = pd.concat(dfs).T
+            values.rename(index={1: stock}, inplace=True)
+            statistics.append(values)
+        
+        return pd.concat(statistics)
+
+    def get_historical(self, stocks, **kwargs):
         """
-        Convert string to float
-
-        :param string: string to convert
-        :return float: return float of string, or -1 if NoneType
+        Scrape Yahoo Finance for historical data\n
+        
+        :param stocks: list of stock tickers\n
+        :kwarg period1: minimum range of data (datetime object)\n
+        :kwarg period2: maximum range of data (datetime object)\n
+        :kwarg interval: interval of data (d: daily, wk: weekly, mo: monthly)\n
+        :kwarg oneline: return dataframe as 1 row per stock\n
+        :return: dataframe of resulting data
         """
-        n = string
+        # Handle kwargs
+        today = datetime.today() - datetime(1970, 1, 1)
+        today = round(today.total_seconds())
+        period1 = kwargs.get("period1", today - 31536000) # Today - 1 year
+        period2 = kwargs.get("period2", period1 + 31536000) # Min bound + 1 year
+        interval = kwargs.get("interval", "d")
+        oneline = kwargs.get("oneline", True)
 
-        # Check if NoneType
-        if n is None:
-            print("!!! No such entry exists")
-            n = -1
-            return n
+        if not oneline and len(stocks) > 1:
+            raise Exception("Multi-line output only available for one stock at a time")
 
-        # Remove all commas
-        if len(n.split(",")) > 1:
-            n = "".join(n.split(","))
+        historical = []
+        for stock in stocks:
+            link = f"https://query1.finance.yahoo.com/v7/finance/download/{stock}?period1={period1}&period2={period2}&interval=1{interval}"
+            data = requests.get(link, stream=True).text
+            data = data.split("\n")
+            data = [row.split(",") for row in data]
 
-        try:
-            # Make result a float
-            if n[-1] == "T":
-                n = float(n[:-1]) * 1000000000000
-            elif n[-1] == "B":
-                n = float(n[:-1]) * 1000000000
-            elif n[-1] == "M":
-                n = float(n[:-1]) * 1000000
-            elif n[-1] == "k":
-                n = float(n[:-1]) * 1000
-            elif n[-1] == "%":
-                n = float(n[:-1])
+            df = pd.DataFrame(data[1:], columns=data[0])
+            df = df.set_index("Date")
+            
+            if oneline:
+                indices = []
+                for index, row in df.iterrows():
+                    for col in df.columns:
+                        indices.append(f"{col} - {row.name}")
+                df = df.values.flatten()
+                historical.append(pd.DataFrame([df], index=[stock], columns=indices))
             else:
-                n = float(n)
-        except ValueError:
-            print(f"!!! Unknown input {n}")
-            n = -1
+                return df
         
-        return n
+        return pd.concat(historical)
+                
 
-    def five_day_change(self):
+    def get_financials(self, stocks):
+        pass
+
+    def get_analysis(self, stocks, **kwargs):
         """
-        Update five day % change
-
-        :return: stock watchlist
-        """
-        self.stocks = self.create_columns(["5 Day % Change"])
-
-        for ticker, row in self.stocks.iterrows():
-            ytday = row["Close Today - 1"]
-            start = row["Open Today - 5"]
-
-            if ytday == -1 or start == -1:
-                print(f"Droppping {ticker}")
-                self.stocks.drop([ticker])
-            else:
-                change = (ytday / start) * 100 - 100
-                self.stocks.at[ticker, "5 Day % Change"] = change
+        Scrape Yahoo Finance for analyist data\n
         
-        self.save()
-        return self.stocks
-
-    def scrape_fundamentals(self, ticker):
+        :param stocks: list of stock tickers\n
+        :kwarg timeframe: column to scrape ('cq': current quarter, 'nq': next quarter, 'cy': current year, 'ny': next year)\n
+        :return: dataframe of resulting data
         """
-        Scrape Yahoo Finance for stock fundamentals
+        # Handle timeframe keyword arguments
+        timeframe = kwargs.get("timeframe", "cq")
+        if timeframe =="nq":
+            col = 1
+        elif timeframe == "cy":
+            col = 2
+        elif timeframe == "ny":
+            col = 3
+        else:
+            col = 0
 
-        :param ticker: stock ticker
-        :return: dictionary of results
-        """
-        paths = self.load_paths("Fundamentals")
-        results = {}
-
-        response = requests.get(f"https://finance.yahoo.com/quote/{ticker}/key-statistics?p={ticker}").content
-        fundamentals = html.fromstring(response)
-
-        for key in paths:
-            try:
-                path = paths[key]
-                value = fundamentals.xpath(path)[0].text
-                value = self.to_float(value)
-                results[key] = value
-            except IndexError:
-                print("!!! Yahoo Finance has no information here")
-                results[key] = -1
-        
-        return results
-
-    def scrape_week_info(self, ticker):
-        """
-        Scrape Yahoo Finance for historical stock info
-
-        :param ticker: stock ticker
-        :return: dictionary of results
-        """
-        paths = self.load_paths("Week Info")
-        results = {}
-
-        response = requests.get(f"https://finance.yahoo.com/quote/{ticker}/history?p={ticker}").content
-        history = html.fromstring(response)
-
-        for key in paths:
-            try:
-                path = paths[key]
-                value = history.xpath(path)[0].text
-                value = self.to_float(value)
-                results[key] = value
-            except IndexError:
-                print("!!! Yahoo Finance has no information here")
-                results[key] = -1
-        
-        return results
-
+        analysis = []
+        for stock in stocks:
+            dfs = []
+            link = f"https://finance.yahoo.com/quote/{stock}/analysis?p={stock}"
+            for table in self.get_tables(link):
+                # Get new index names (to differentiate)
+                title = table.index.name
+                indices = [f"{row} - {title}" for row in table.index]
+                
+                # Rename indices and columns
+                table = table.iloc[:, [col]]
+                table.index = indices
+                table.columns = [stock]
+                dfs.append(table)
+            
+            analysis.append(pd.concat(dfs).T)
+            
+        return pd.concat(analysis)
+    
     def get_stock_price(self, ticker):
         """
-        Scrape Yahoo Finance for stock price
+        Scrapes Yahoo Finance for the price of some stock\n
         
-        :param ticker: stock ticker
-        :return: price of stock
+        :param ticker: symbol of stock\n
+        :return: float price of stock
         """
-        path = self.load_paths("Overview")["Price"]
+        link = f"https://finance.yahoo.com/quote/{ticker}?p={ticker}"
+        overview = requests.get(link)
+        soup = BeautifulSoup(overview.content, "html.parser")
 
-        response = requests.get(f"https://finance.yahoo.com/quote/{ticker}/")
-        html_res = html.fromstring(response.content)
-
-        price = html_res.xpath(path)[0]
-        price = float(price.text)
-        return price
+        css_selector = "#quote-header-info > div.My\(6px\).Pos\(r\).smartphone_Mt\(6px\) > div.D\(ib\).Va\(m\).Maw\(65\%\).Ov\(h\) > div > span.Trsdu\(0\.3s\).Fw\(b\).Fz\(36px\).Mb\(-4px\).D\(ib\)"
+        price = soup.select(css_selector)[0]
+        return price.getText()
     
-    def get_watchlist(self):
+    def save(self, stocks, filename):
         """
-        Get all stocks on watchlist
+        Write stocks to filename as a csv file\n
 
-        :return: list of symbols
+        :param stocks: list of stock tickers\n
+        :param filename: name of file\n
         """
-        symbols = self.stocks.index
-        return symbols
+        stocks.to_csv(filename)
 
-    def run(self, **kwargs):
+    def get_stocks(self, watchlist):
         """
-        Scrape Yahoo Finance for stock data
-
-        :kwarg run_fundamentals: if false, will skip scraping fundamentals (default: true)
-        :kwarg run_week: if false, will scape scraping week info (default: true)
-        :kwarg columns: list of column names to append to dataframe (default: none)
-        :return: None
         """
-        i = 0
-        size = self.stocks.shape[0]
-        run_fund = kwargs.get("run_fundamentals", True)
-        run_week = kwargs.get("run_week", True)
+        pass
 
-        for ticker, row in self.stocks.iterrows():
-            if row.isnull().values.any():
-                if run_fund:
-                    fundamentals = self.scrape_fundamentals(ticker)
-                else:
-                    fundamentals = {}
-
-                if run_week:
-                    week_info = self.scrape_week_info(ticker)
-                else: 
-                    week_info = {}
-
-                info = {**fundamentals, **week_info}
-                columns = kwargs.get("columns", info)
-                for key in columns:
-                    self.stocks.at[ticker, key] = info[key]
-                    print(f"Data entry at {key} for {ticker}: {info[key]}")
-            else:
-                print(f"!!! Values filled.  Passing {ticker}...")
-            
-            i += 1
-            progress = round((i / size) * 100, 2)
-            if progress % 10 == 0:
-                print(f"{progress}% completed, saving...")
-                self.save()
-            else:
-                print(f"{progress}% completed...")
-        
-        return self.stocks
-    
-    def save(self):
-        """
-        Save self.stocks to CSV file
-
-        :return: None
-        """
-        self.stocks.to_csv(self.out_file)
+y = YahooScraper()
+price = y.get_historical(["AAPL", "MSFT", "INTC"])
+print(price)
