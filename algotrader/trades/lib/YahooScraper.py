@@ -178,7 +178,3 @@ class YahooScraper:
         """
         """
         pass
-
-y = YahooScraper()
-price = y.get_historical(["AAPL", "MSFT", "INTC"])
-print(price)

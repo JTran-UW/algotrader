@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        <p>Stock: </p><input type="text" name="stock">
+        <input type="submit" value="Purchase">
+    </form>
+{% endblock %}
