@@ -780,7 +780,7 @@
 											"top": 373,
 											"width": 202.68701171875,
 											"height": 13,
-											"text": "+buy(stock, price_purchased)",
+											"text": "+buy(stock)",
 											"horizontalAlignment": 0
 										},
 										{
@@ -797,7 +797,7 @@
 											"top": 388,
 											"width": 202.68701171875,
 											"height": 13,
-											"text": "+sell(ticker, quantity)",
+											"text": "+sell(id)",
 											"horizontalAlignment": 0
 										},
 										{
@@ -1127,6 +1127,40 @@
 										},
 										{
 											"_type": "UMLAttributeView",
+											"_id": "AAAAAAF2uvIQ2VWJeTA=",
+											"_parent": {
+												"$ref": "AAAAAAF2r7+shqKmz90="
+											},
+											"model": {
+												"$ref": "AAAAAAF2uvIQmFWG23I="
+											},
+											"font": "Arial;13;0",
+											"left": 653,
+											"top": 619,
+											"width": 158.615234375,
+											"height": 13,
+											"text": "+price_sold: float",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAF2uvIv01WuFlY=",
+											"_parent": {
+												"$ref": "AAAAAAF2r7+shqKmz90="
+											},
+											"model": {
+												"$ref": "AAAAAAF2uvIvoVWr2aU="
+											},
+											"font": "Arial;13;0",
+											"left": 653,
+											"top": 634,
+											"width": 158.615234375,
+											"height": 13,
+											"text": "+date_sold: datetime",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
 											"_id": "AAAAAAF2r8FrlaLqTU4=",
 											"_parent": {
 												"$ref": "AAAAAAF2r7+shqKmz90="
@@ -1136,7 +1170,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 653,
-											"top": 619,
+											"top": 649,
 											"width": 158.615234375,
 											"height": 13,
 											"text": "+sold: boolean",
@@ -1153,7 +1187,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 653,
-											"top": 634,
+											"top": 664,
 											"width": 158.615234375,
 											"height": 13,
 											"text": "+owner: Trader",
@@ -1164,7 +1198,7 @@
 									"left": 648,
 									"top": 569,
 									"width": 168.615234375,
-									"height": 83
+									"height": 113
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -1175,30 +1209,11 @@
 									"model": {
 										"$ref": "AAAAAAF2r7+sg6KeYJ4="
 									},
-									"subViews": [
-										{
-											"_type": "UMLOperationView",
-											"_id": "AAAAAAF2r8FEWKLjUMw=",
-											"_parent": {
-												"$ref": "AAAAAAF2r7+shqKnzFY="
-											},
-											"model": {
-												"$ref": "AAAAAAF2r8FENqLgT3g="
-											},
-											"font": "Arial;13;0",
-											"left": 653,
-											"top": 657,
-											"width": 158.615234375,
-											"height": 13,
-											"text": "+sell(price_sold, date_sold)",
-											"horizontalAlignment": 0
-										}
-									],
 									"font": "Arial;13;0",
 									"left": 648,
-									"top": 652,
+									"top": 682,
 									"width": 168.615234375,
-									"height": 23
+									"height": 10
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -1238,7 +1253,7 @@
 							"left": 648,
 							"top": 544,
 							"width": 168.615234375,
-							"height": 131,
+							"height": 148,
 							"nameCompartment": {
 								"$ref": "AAAAAAF2r7+shaKhC0A="
 							},
@@ -2145,7 +2160,8 @@
 							"_parent": {
 								"$ref": "AAAAAAF2r7gQ/aH0wHw="
 							},
-							"name": "whatever else"
+							"name": "whatever else",
+							"type": ""
 						}
 					]
 				},
@@ -2238,14 +2254,6 @@
 										"$ref": "AAAAAAF2r8MQzaMGzxw="
 									},
 									"name": "stock"
-								},
-								{
-									"_type": "UMLParameter",
-									"_id": "AAAAAAF2r8NmWaMPbnk=",
-									"_parent": {
-										"$ref": "AAAAAAF2r8MQzaMGzxw="
-									},
-									"name": "price_purchased"
 								}
 							]
 						},
@@ -2263,17 +2271,7 @@
 									"_parent": {
 										"$ref": "AAAAAAF2r8N2qaMUpAg="
 									},
-									"name": "ticker",
-									"type": ""
-								},
-								{
-									"_type": "UMLParameter",
-									"_id": "AAAAAAF2r8ORs6McDvw=",
-									"_parent": {
-										"$ref": "AAAAAAF2r8N2qaMUpAg="
-									},
-									"name": "quantity",
-									"type": ""
+									"name": "id"
 								}
 							]
 						},
@@ -2410,6 +2408,24 @@
 						},
 						{
 							"_type": "UMLAttribute",
+							"_id": "AAAAAAF2uvIQmFWG23I=",
+							"_parent": {
+								"$ref": "AAAAAAF2r7+sg6KeYJ4="
+							},
+							"name": "price_sold",
+							"type": "float"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAF2uvIvoVWr2aU=",
+							"_parent": {
+								"$ref": "AAAAAAF2r7+sg6KeYJ4="
+							},
+							"name": "date_sold",
+							"type": "datetime"
+						},
+						{
+							"_type": "UMLAttribute",
 							"_id": "AAAAAAF2r8FrcaLnp+E=",
 							"_parent": {
 								"$ref": "AAAAAAF2r7+sg6KeYJ4="
@@ -2427,36 +2443,6 @@
 							"type": {
 								"$ref": "AAAAAAF2r7jexqIf030="
 							}
-						}
-					],
-					"operations": [
-						{
-							"_type": "UMLOperation",
-							"_id": "AAAAAAF2r8FENqLgT3g=",
-							"_parent": {
-								"$ref": "AAAAAAF2r7+sg6KeYJ4="
-							},
-							"name": "sell",
-							"parameters": [
-								{
-									"_type": "UMLParameter",
-									"_id": "AAAAAAF2r8JJVqL0yr0=",
-									"_parent": {
-										"$ref": "AAAAAAF2r8FENqLgT3g="
-									},
-									"name": "price_sold",
-									"type": ""
-								},
-								{
-									"_type": "UMLParameter",
-									"_id": "AAAAAAF2r8JJVqL1VnQ=",
-									"_parent": {
-										"$ref": "AAAAAAF2r8FENqLgT3g="
-									},
-									"name": "date_sold",
-									"type": ""
-								}
-							]
 						}
 					]
 				},
@@ -2540,7 +2526,8 @@
 									"_parent": {
 										"$ref": "AAAAAAF2sfDw1amLq2o="
 									},
-									"name": "ticker"
+									"name": "ticker",
+									"type": ""
 								},
 								{
 									"_type": "UMLParameter",
@@ -2548,7 +2535,8 @@
 									"_parent": {
 										"$ref": "AAAAAAF2sfDw1amLq2o="
 									},
-									"name": "price"
+									"name": "price",
+									"type": ""
 								}
 							]
 						}

@@ -163,7 +163,7 @@ class YahooScraper:
 
         css_selector = "#quote-header-info > div.My\(6px\).Pos\(r\).smartphone_Mt\(6px\) > div.D\(ib\).Va\(m\).Maw\(65\%\).Ov\(h\) > div > span.Trsdu\(0\.3s\).Fw\(b\).Fz\(36px\).Mb\(-4px\).D\(ib\)"
         price = soup.select(css_selector)[0]
-        return price.getText()
+        return float(price.getText())
     
     def save(self, stocks, filename):
         """

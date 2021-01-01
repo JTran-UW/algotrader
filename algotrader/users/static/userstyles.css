@@ -1,0 +1,17 @@
+.table-label {
+    margin-top: 50px;
+}
+
+.stock-bar {
+    width: 50vw;
+    background-color: white;
+}
+
+.stock-bar td{
+    padding: 3px;
+}
+
+table, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}

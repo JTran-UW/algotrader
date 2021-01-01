@@ -37,5 +37,20 @@ def logout_view(request):
     logout(request)
     return render(request, "users/logout.html")
 
+@login_required
 def profile_view(request):
-    return render(request, "users/profile.html")
+    if request.method == "POST":
+        submit = request.POST["submit"]
+        id = request.POST["id"]
+        if submit == "Delete":
+            request.user.delete(id)
+        else:
+            request.user.sell(id)
+
+    transactions = request.user.get_transactions()
+    transactions = list(reversed(transactions))
+    owned_ts = [t for t in transactions if not t.sold]
+    sold_ts = [t for t in transactions if t.sold]
+    balance = "{:.2f}".format(request.user.balance)
+
+    return render(request, "users/profile.html", {"owned_ts": owned_ts, "sold_ts": sold_ts, "balance": balance})

@@ -128,3 +128,4 @@ STATICFILES_DIRS = [
 ]
 
 LOGIN_REDIRECT_URL = "profile"
+LOGIN_URL = "login"

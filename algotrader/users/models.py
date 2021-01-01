@@ -1,5 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from lib.YahooScraper import YahooScraper
+
+y = YahooScraper()
 
 # Create your models here.
 
@@ -54,28 +59,73 @@ class Trader(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
-    def buy(self, stock, price_purchased):
+    # My methods
+    def buy(self, stock):
+        """
+        Purchase a share
+
+        :param stock: stock to buy
+        :param price_purchased: price of stock
+        :return: Transaction object
+        """
+        # Create new transaction
+        price_purchased = y.get_stock_price(stock)
         new_transaction = Transaction.objects.create(
             owner=self,
             stock=stock, 
             price_purchased=price_purchased
             )
         new_transaction.save()
-        return new_transaction
 
-    def get_transactions(**kwargs):
+        # Update balance
+        self.balance -= price_purchased
+        self.save()
+        return new_transaction
+    
+    def sell(self, id):
+        """
+        """
+        transaction = Transaction.objects.get(pk=id)
+        price_sold = y.get_stock_price(transaction.stock)
+
+        # Change transaction fields
+        transaction.sold = True
+        transaction.price_sold = price_sold
+        transaction.date_sold = timezone.now()
+        transaction.save()
+
+        # Change balance
+        self.balance += price_sold
+        self.save()
+        # TODO change values including date sold, price sold, balance
+    
+    def delete(self, id):
+        """
+        """
+        transaction = Transaction.objects.get(pk=id)
+        transaction.delete()
+
+    def get_transactions(self, **kwargs):
+        """
+        Get all transactions
+
+        :kwarg currently_owned: get only currently owned transactions (default: False)
+        :return: QuerySet of filtered Transactions
+        """
         currently_owned = kwargs.get("currently_owned", False)
-        filtered = Transaction.objects.filter(owner=username)
+        if currently_owned:
+            filtered = Transaction.objects.filter(owner=self, sold=False)
+        else:
+            filtered = Transaction.objects.filter(owner=self)
 
         return filtered
-
 
 class Transaction(models.Model):
     owner = models.ForeignKey("Trader", on_delete=models.CASCADE)
     stock = models.CharField(max_length=10)
     price_purchased = models.FloatField()
     date_purchased = models.DateTimeField(verbose_name="date purchased", auto_now_add=True)
-    sold = False
+    price_sold = models.FloatField(blank=True, null=True)
+    date_sold = models.DateTimeField(blank=True, null=True)
+    sold = models.BooleanField(default=False)
     
-    def sell(price_sold, date_sold):
-        pass

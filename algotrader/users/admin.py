@@ -14,7 +14,7 @@ class TradingAdmin(UserAdmin):
     fieldsets = ()
 
 class TransactionAdmin(admin.ModelAdmin):
-    readonly_fields = ("owner", "stock", "price_purchased", "date_purchased")
+    readonly_fields = ("owner", "stock", "price_purchased", "date_purchased", "sold")
 
 admin.site.register(Transaction, TransactionAdmin)
 admin.site.register(Trader, TradingAdmin)
