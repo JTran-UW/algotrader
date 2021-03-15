@@ -49,8 +49,11 @@ def profile_view(request):
 
     transactions = request.user.get_transactions()
     transactions = list(reversed(transactions))
+
     owned_ts = [t for t in transactions if not t.sold]
     sold_ts = [t for t in transactions if t.sold]
     balance = "{:.2f}".format(request.user.balance)
 
-    return render(request, "users/profile.html", {"owned_ts": owned_ts, "sold_ts": sold_ts, "balance": balance})
+    return render(request, "users/profile.html", {"owned_ts": owned_ts,
+                                                  "sold_ts": sold_ts, 
+                                                  "balance": balance})

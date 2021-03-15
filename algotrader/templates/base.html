@@ -10,12 +10,19 @@
     </head>
     <body>
         <div class="nav-bar">
-            <a href="{% url 'home' %}" class="link">Home</a>
-            <a href="{% url 'login' %}" class="link">Login</a>
-            <a href="{% url 'register' %}" class="link">Register</a>
-            <a href="{% url 'profile' %}" class="link">Confirmation</a>
-            <a href="{% url 'logout' %}" class="link">Logout</a>
-            <a href="{% url 'stock' %}" class="link">Buy Stocks</a>
+            <a href="{% url 'home' %}" class="logo">Algotrader</a>
+            
+            <div class="link-bar">
+                <a href="{% url 'register' %}" class="link">Register</a>
+                <a href="{% url 'profile' %}" class="link">Profile</a>
+                <a href="{% url 'stock' %}" class="link">Buy Stocks</a>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="button">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="button">Sign in</a>
+            {% endif %}
+            </div>
         </div>
 
         <div class="container">

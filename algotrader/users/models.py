@@ -65,7 +65,6 @@ class Trader(AbstractBaseUser):
         Purchase a share
 
         :param stock: stock to buy
-        :param price_purchased: price of stock
         :return: Transaction object
         """
         # Create new transaction
@@ -84,6 +83,9 @@ class Trader(AbstractBaseUser):
     
     def sell(self, id):
         """
+        Sell a share
+
+        :param id: transaction pk
         """
         transaction = Transaction.objects.get(pk=id)
         price_sold = y.get_stock_price(transaction.stock)
@@ -97,10 +99,12 @@ class Trader(AbstractBaseUser):
         # Change balance
         self.balance += price_sold
         self.save()
-        # TODO change values including date sold, price sold, balance
     
     def delete(self, id):
         """
+        Delete a transaction
+
+        :param id: transaction pk
         """
         transaction = Transaction.objects.get(pk=id)
         transaction.delete()
