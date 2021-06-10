@@ -1,1 +1,1 @@
-web: gunicorn algotrader.wsgi
+web: gunicorn algotrader.algotrader.wsgi
