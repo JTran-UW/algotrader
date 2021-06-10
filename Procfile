@@ -1,1 +1,1 @@
-web: gunicorn algotrader.algotrader.wsgi --pythonpath=./algotrader
+web: gunicorn algotrader.wsgi --pythonpath=./algotrader
