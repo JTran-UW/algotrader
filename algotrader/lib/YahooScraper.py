@@ -173,8 +173,3 @@ class YahooScraper:
         :param filename: name of file\n
         """
         stocks.to_csv(filename)
-
-    def get_stocks(self, watchlist):
-        """
-        """
-        pass

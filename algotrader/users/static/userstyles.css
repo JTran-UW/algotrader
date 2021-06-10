@@ -14,5 +14,40 @@
 table, td {
     border: 1px solid black;
     border-collapse: collapse;
+    color: black;
 }
 
+.center {
+    text-align: center;
+}
+
+.topspace {
+    margin-top: 15px !important;
+}
+
+.form {
+    width: 300px;
+    margin: 0px auto;
+    background-color: #4d4d4d;
+    border: 2px solid black;
+    border-radius: 7px;
+    padding: 10px 50px 75px 50px;
+}
+
+.form input {
+    width: 100%;
+    color: black;
+    font-family: Roboto Slab;
+    font-size: 14px;
+    margin: 0px auto;
+    box-sizing: border-box;
+}
+
+.form input:focus {
+    outline: none;
+}
+
+.expanding-form {
+    margin: 0px;
+    width: auto;
+}

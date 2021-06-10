@@ -8,55 +8,68 @@
 {% block content %}
     <h1>Welcome {{ user.username }}</h1>
     <p>Balance: ${{ balance }}</p>
-    <h3 class="table-label">Currently owned shares</h3>
-    <table class="stock-bar">
-        <tr>
-            <td>Stock</td>
-            <td>Price Purchased</td>
-            <td>Date Purchased</td>
-            <td>Sell Share</td>
-        </tr>
-        {% for t in owned_ts %}
-            <tr>
-                <td>{{ t.stock }}</td>
-                <td>{{ t.price_purchased }}</td>
-                <td>{{ t.date_purchased }}</td>
-                <td>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" value="{{ t.pk }}" name="id">
-                        <input type="submit" value="Sell" name="submit">
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="form expanding-form topspace">
+        <h3 class="table-label">Currently owned shares</h3>
+        {% if owned_ts|length > 0 %}
+            <table class="stock-bar">
+                <tr>
+                    <td>Stock</td>
+                    <td>Price Purchased</td>
+                    <td>Date Purchased</td>
+                    <td>Sell Share</td>
+                </tr>
+                {% for t in owned_ts %}
+                    <tr>
+                        <td>{{ t.stock }}</td>
+                        <td>{{ t.price_purchased }}</td>
+                        <td>{{ t.date_purchased }}</td>
+                        <td>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ t.pk }}" name="id">
+                                <input type="submit" value="Sell" name="submit" class="button submit">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>You currently own no shares.</p>
+            <a href="{% url 'stock' %}" class="button submit topspace">Make a purchase here.</a>
+        {% endif %}
+    </div>
 
-    <h3 class="table-label">Previously owned shares</h3>
-    <table class="stock-bar">
-        <tr>
-            <td>Stock</td>
-            <td>Price Purchased</td>
-            <td>Date Purchased</td>
-            <td>Price Sold</td>
-            <td>Date Sold</td>
-            <td>Delete Entry</td>
-        </tr>
-        {% for t in sold_ts %}
-            <tr>
-                <td>{{ t.stock }}</td>
-                <td>{{ t.price_purchased }}</td>
-                <td>{{ t.date_purchased }}</td>
-                <td>{{ t.price_sold }}</td>
-                <td>{{ t.date_sold }}</td>
-                <td>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" value="{{ t.pk }}" name="id">
-                        <input type="submit" value="Delete" name="submit">
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="form expanding-form topspace">
+        <h3 class="table-label">Previously owned shares</h3>
+        {% if sold_ts|length > 0 %}
+            <table class="stock-bar">
+                <tr>
+                    <td>Stock</td>
+                    <td>Price Purchased</td>
+                    <td>Date Purchased</td>
+                    <td>Price Sold</td>
+                    <td>Date Sold</td>
+                    <td>Delete Entry</td>
+                </tr>
+                {% for t in sold_ts %}
+                    <tr>
+                        <td>{{ t.stock }}</td>
+                        <td>{{ t.price_purchased }}</td>
+                        <td>{{ t.date_purchased }}</td>
+                        <td>{{ t.price_sold }}</td>
+                        <td>{{ t.date_sold }}</td>
+                        <td>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ t.pk }}" name="id">
+                                <input type="submit" value="Delete" name="submit" class="button submit">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>You have no previously recorded transactions.</p>
+        {% endif %}
+    </div>
 {% endblock %}
