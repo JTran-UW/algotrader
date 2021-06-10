@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -129,3 +130,6 @@ STATICFILES_DIRS = [
 
 LOGIN_REDIRECT_URL = "profile"
 LOGIN_URL = "login"
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())
