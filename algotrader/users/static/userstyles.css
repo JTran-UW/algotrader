@@ -28,16 +28,15 @@ table, td {
 .form {
     width: 300px;
     margin: 0px auto;
-    background-color: #4d4d4d;
-    border: 2px solid black;
-    border-radius: 7px;
     padding: 10px 50px 75px 50px;
+    border-radius: 50px;
+    box-shadow: 10px 10px 30px #dfdfdf;
 }
 
 .form input {
     width: 100%;
     color: black;
-    font-family: Roboto Slab;
+    font-family: 'Nunito';
     font-size: 14px;
     margin: 0px auto;
     box-sizing: border-box;

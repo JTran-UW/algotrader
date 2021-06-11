@@ -1,23 +1,19 @@
 body {
-    background-color: #333333;
     margin: 0px;
-}
-
-* {
-    color: white;
 }
 
 a {
     text-decoration: none;
+    color: black;
 }
 
 .nav-bar {
-    font-family: Roboto;
+    font-family: 'Nunito';
     width: 100vw;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #4d4d4d;
+    box-shadow: 10px 10px 60px #dfdbdb;
 }
 
 .logo {
@@ -37,16 +33,11 @@ a {
     margin: 0px 20px;
 }
 
-.link:hover {
-    color: black;
-    transition: 0.2s;
-}
-
 .button {
     background-color: black;
     color: white;
     padding: 10px 32px;
-    border-radius: 7px;
+    border-radius: 50px;
     border: 1px solid #262626;
     font-size: 16px;
     cursor: pointer;
@@ -57,7 +48,6 @@ a {
     transition: 0.2s;
 }
 
-
 .container {
     padding: 75px;
     width: 65vw;
@@ -65,12 +55,11 @@ a {
 }
 
 .container * {
-    font-family: Roboto Slab;
+    font-family: 'Nunito';
 }
 
 .title {
-    font-family: Roboto;
-    font-size: 100px;
+    font-size: 5em;
     margin-bottom: 50px;
 }
 
@@ -79,13 +68,12 @@ a {
 }
 
 .subtext {
-    font-size: 35px;
-    font-family: Cambria Math;
+    font-size: 2em;
 }
 
 .submit {
     font-size: 14px;
-    border-radius: 7px;
+    border-radius: 15px;
     padding: 7px 20px;
     color: white !important;
 }
