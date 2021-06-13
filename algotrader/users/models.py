@@ -60,24 +60,24 @@ class Trader(AbstractBaseUser):
         return True
 
     # My methods
-    def buy(self, stock):
+    def buy(self, stock, price):
         """
         Purchase a share
 
         :param stock: stock to buy
+        :param price: price of stock at purchase
         :return: Transaction object
         """
         # Create new transaction
-        price_purchased = y.get_stock_price(stock)
         new_transaction = Transaction.objects.create(
             owner=self,
             stock=stock, 
-            price_purchased=price_purchased
+            price_purchased=price
             )
         new_transaction.save()
 
         # Update balance
-        self.balance -= price_purchased
+        self.balance -= price
         self.save()
         return new_transaction
     

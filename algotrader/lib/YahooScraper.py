@@ -81,7 +81,7 @@ class YahooScraper:
         period1 = kwargs.get("period1", today - 31536000) # Today - 1 year
         period2 = kwargs.get("period2", period1 + 31536000) # Min bound + 1 year
         interval = kwargs.get("interval", "d")
-        oneline = kwargs.get("oneline", True)
+        oneline = kwargs.get("oneline", False)
 
         if not oneline and len(stocks) > 1:
             raise Exception("Multi-line output only available for one stock at a time")
@@ -163,7 +163,8 @@ class YahooScraper:
 
         css_selector = "#quote-header-info > div.My\(6px\).Pos\(r\).smartphone_Mt\(6px\) > div.D\(ib\).Va\(m\).Maw\(65\%\).Ov\(h\) > div > span.Trsdu\(0\.3s\).Fw\(b\).Fz\(36px\).Mb\(-4px\).D\(ib\)"
         price = soup.select(css_selector)[0]
-        return float(price.getText())
+        price = price.getText().replace(",", "")
+        return float(price)
     
     def save(self, stocks, filename):
         """

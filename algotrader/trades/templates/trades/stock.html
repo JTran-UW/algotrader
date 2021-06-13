@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <form method="POST">
+    <form method="POST" class="block">
         {% csrf_token %}
-        <p>Stock: </p><input type="text" name="stock">
-        <input type="submit" value="Purchase" class="button submit">
+        <h1 class="topspace">Search stocks</h1><input type="text" name="stock">
+        <input type="submit" value="Search" class="button submit">
     </form>
 {% endblock %}

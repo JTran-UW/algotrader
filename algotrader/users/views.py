@@ -35,7 +35,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return render(request, "users/logout.html")
+    return redirect("login")
 
 @login_required
 def profile_view(request):

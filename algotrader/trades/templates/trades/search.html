@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'tradestyles.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="block">
+        <h1>{{ data.ticker }}</h1>
+        <p>Price: {{ data.price }}</p>
+        <!--Historical chart-->
+        <div>
+            <canvas id="historical"></canvas>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="topspace quantity">
+                <p>Quantity: </p>
+                {% if user.is_authenticated and data.max_quant > 0 %}
+                    <input type="number" name="quantity" min="1" max="{{ data.max_quant }}">
+                {% else %}
+                    <input type="number" disabled="disabled" name="quantity" min="1" max="{{ data.max_quant }}">
+                {% endif %}
+            </div>
+            <input type="hidden" value="{{ data.ticker }}" name="stock">
+
+            {% if user.is_authenticated and data.max_quant > 0 %}
+                <input type="submit" class="button buy-button topspace" value="Buy">
+            {% else %}
+                <input type="submit" class="button buy-button topspace grey-button" disabled="disabled" value="Buy">
+            {% endif %}
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var hc = document.getElementById("historical").getContext("2d");
+        var histChart = new Chart(hc, {
+            type: "line",
+            data: {
+                labels: {{ data.daterange|safe }},
+                datasets: [{
+                    label: "{{ data.ticker }} historical price",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: {{ data.close|safe }},
+                }]
+            },
+            options: {}
+        })
+    </script>
+{% endblock %}

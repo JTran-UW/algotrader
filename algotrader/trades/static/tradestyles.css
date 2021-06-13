@@ -1,0 +1,7 @@
+.buy-button {
+    width: auto !important;
+}
+
+.quantity * {
+    display: inline-block;
+}

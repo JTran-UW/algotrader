@@ -8,7 +8,8 @@
 {% block content %}
     <h1>Welcome {{ user.username }}</h1>
     <p>Balance: ${{ balance }}</p>
-    <div class="form expanding-form topspace">
+    <a href="{% url 'logout' %}">Logout</a>
+    <div class="block expanding-form topspace">
         <h3 class="table-label">Currently owned shares</h3>
         {% if owned_ts|length > 0 %}
             <table class="stock-bar">
@@ -39,7 +40,7 @@
         {% endif %}
     </div>
 
-    <div class="form expanding-form topspace">
+    <div class="block expanding-form topspace">
         <h3 class="table-label">Previously owned shares</h3>
         {% if sold_ts|length > 0 %}
             <table class="stock-bar">

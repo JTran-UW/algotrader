@@ -23,20 +23,21 @@ a {
 
 .link-bar {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    margin-right: 40px;
+    padding-right: 40px;
 }
 
 .link {
     padding: 10px;
     font-size: 16px;
-    margin: 0px 20px;
+    margin: 0px 25px;
 }
 
 .button {
     background-color: black;
-    color: white;
-    padding: 10px 32px;
+    color: white !important;
+    padding: 7px 25px;
     border-radius: 50px;
     border: 1px solid #262626;
     font-size: 16px;
@@ -46,6 +47,16 @@ a {
 .button:hover {
     box-shadow: 0px 0px 5px #1a1a1a;
     transition: 0.2s;
+}
+
+.grey-button {
+    background-color: grey;
+    cursor: auto;
+    border: none;
+}
+
+.grey-button:hover {
+    box-shadow: none;
 }
 
 .container {
@@ -76,4 +87,37 @@ a {
     border-radius: 15px;
     padding: 7px 20px;
     color: white !important;
+}
+
+.topspace {
+    margin-top: 25px !important;
+}
+
+.block {
+    margin: 0px auto;
+    padding: 10px 50px 75px 50px;
+    border-radius: 50px;
+    box-shadow: 10px 10px 30px #dfdfdf;
+}
+
+.form input {
+    width: 100%;
+    color: black;
+    font-family: 'Nunito';
+    font-size: 14px;
+    margin: 0px auto;
+    box-sizing: border-box;
+}
+
+.form input:focus {
+    outline: none;
+}
+
+.expanding-form {
+    margin: 0px;
+    width: auto;
+}
+
+.user-form {
+    width: 300px !important;
 }

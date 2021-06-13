@@ -20,33 +20,3 @@ table, td {
 .center {
     text-align: center;
 }
-
-.topspace {
-    margin-top: 15px !important;
-}
-
-.form {
-    width: 300px;
-    margin: 0px auto;
-    padding: 10px 50px 75px 50px;
-    border-radius: 50px;
-    box-shadow: 10px 10px 30px #dfdfdf;
-}
-
-.form input {
-    width: 100%;
-    color: black;
-    font-family: 'Nunito';
-    font-size: 14px;
-    margin: 0px auto;
-    box-sizing: border-box;
-}
-
-.form input:focus {
-    outline: none;
-}
-
-.expanding-form {
-    margin: 0px;
-    width: auto;
-}

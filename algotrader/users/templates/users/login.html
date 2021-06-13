@@ -6,13 +6,17 @@
 {% endblock %}
 
 {% block content %}
-    <form method="POST" class="form">
+    <form method="POST" class="block form user-form">
         <p class="title header center">Login</p>
         {% csrf_token %}
-        <p>Username</p>
-        {{ form.username }}
-        <p>Password</p>
-        {{ form.password }}<br>
+        {% for field in form %}
+            <p>{{ field.label }}</p>
+            {{ field }}
+            {{ field.errors }}
+        {% endfor %}
+        {{ form.non_field_errors }}
         <input type="submit" value="Login" class="submit button topspace">
+
+        <p>Don't have an account yet? <a href="{% url 'register' %}">Register</a></p>
     </form>
 {% endblock %}

@@ -30,6 +30,7 @@ urlpatterns = [
 
     # Trades
     path('stock/', stock_view, name="stock"),
+    path('stock/<str:ticker>', stock_search_view, name="stock"),
 
     # Admin
     path('admin/', admin.site.urls),

@@ -6,17 +6,23 @@
 {% endblock %}
 
 {% block content %}
-    <form method="POST" class="form">
+    <form method="POST" class="block form user-form">
         <p class="title header center">Register</p> 
         {% csrf_token %}
         <p>Email</p>
         {{ form.email }}
+        {{ form.email.errors }}
         <p>Username</p>
         {{ form.username }}
+        {{ form.username.errors }}
         <p>Password</p>
         {{ form.password1 }}
+        {{ form.password1.errors }}
         <p>Confirm password</p>
         {{ form.password2 }}
+        {{ form.password2.errors }}
+        {{ form.non_field_errors }}
         <input type="submit" value="Register" class="submit button topspace">
+        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
     </form>
 {% endblock %}
