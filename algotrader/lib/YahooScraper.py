@@ -8,7 +8,9 @@ class YahooScraper:
         """
         A web scraping tool to gather essential stock information from Yahoo Finance
         """
-        pass
+        self.headers = {
+            "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Mobile Safari/537.36"
+        }
 
     def get_tables(self, link):
         """
@@ -17,7 +19,8 @@ class YahooScraper:
         :param link: str link to page\n
         :return: list of dataframes containing scraped info
         """
-        html = requests.get(link)
+        html = requests.get(link, headers=self.headers)
+        print(html.status_code)
         soup = BeautifulSoup(html.content, "html.parser")
         tables = soup.find_all("table")
         dfs = []
@@ -89,7 +92,7 @@ class YahooScraper:
         historical = []
         for stock in stocks:
             link = f"https://query1.finance.yahoo.com/v7/finance/download/{stock}?period1={period1}&period2={period2}&interval=1{interval}"
-            data = requests.get(link, stream=True).text
+            data = requests.get(link, stream=True, headers=self.headers).text
             data = data.split("\n")
             data = [row.split(",") for row in data]
 
@@ -174,3 +177,6 @@ class YahooScraper:
         :param filename: name of file\n
         """
         stocks.to_csv(filename)
+
+y = YahooScraper()
+print(y.get_historical(["AAPL"]))

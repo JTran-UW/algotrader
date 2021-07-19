@@ -73,6 +73,7 @@ TEMPLATES = [
 ]
 
 AUTH_USER_MODEL = "users.Trader"
+DEFAULT_AUTO_FIELD='django.db.models.AutoField' 
 
 WSGI_APPLICATION = 'algotrader.wsgi.application'
 
