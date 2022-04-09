@@ -3,6 +3,8 @@
 ## Overview
 Algotrader was a project to let me trade stocks virtually before I turned 18. I made a scraper of Yahoo Finance with requests and pandas to get essential stock market data, and later to feed a machine learning model. Using Sci-kit's Random Forest Regression model, assembled a portfolio with 55% gains over 6 months. Designed and developed a paper trading web app using Django, JS, and Chart.js.
 
+This project may be deprecated.
+
 ## Quickstart
 This project requires Python3.
 
